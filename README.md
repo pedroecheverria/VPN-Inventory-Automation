@@ -35,8 +35,11 @@ Este flujo se puede ejecutar **cada 20 minutos** con un orquestador, asegurando 
 
 ---
 
+## ⚠️ Observación  
+💡 **Ojo:** Soy alguien como vos, que está aprendiendo haciendo. Este código **puede ser optimizado para mejorar su eficiencia y simplicidad**, así que si ves formas de mejorarlo, ¡me encantaría recibir tus sugerencias y contribuciones! 🚀  
+
 📌 **Contribuciones:**  
-Si deseas mejorar esta automatización, ¡siéntete libre de hacer un fork y enviar un PR!  
+Si deseas mejorar esta automatización, ¡siéntete libre de hacer un fork y enviar un PR! 
 
 📌 **Contacto:**  
 🔹 **Autor:** [Pedro Echeverria](https://github.com/pedroecheverria)  
