@@ -1,0 +1,26 @@
+{
+    "results": [
+        {
+            "id": 167,
+            "name": "Antel",
+            "status": "unknown",
+            "comment": "VPN: Antel (Created by VPN wizard)",
+            "remote_gateway": "0.0.0.0",
+            "tun_id": null,
+            "local_subnets": "",
+            "remote_subnets": "",
+            "Netbox_ID": "0645b7fe-8ec9-4294-aa7a-cf63eb34df34"
+        },
+        {
+            "id": 166,
+            "name": "Quiniela",
+            "status": "down",
+            "comment": "Responsable: Andres R.",
+            "remote_gateway": "190.168.1.1",
+            "tun_id": null,
+            "local_subnets": "10.86.123.1/32",
+            "remote_subnets": "172.1.1.1/32",
+            "Netbox_ID": "a07930f7-7cc6-48a3-be7f-46e8e23a23ae"
+        }
+    ]
+}

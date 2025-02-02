@@ -1,0 +1,43 @@
+- name: Configurar VPNs en NetBox
+  hosts: localhost
+
+  tasks:
+    - name: Cargar configuración de VPNs desde YAML
+      include_vars:
+        file: previous_vpns.yml
+        name: vpns_data
+
+    - name: Generar UUID para cada VPN y agregarlo como una nueva clave
+      set_fact:
+        vpns_with_uuid: "{{ vpns_with_uuid | default([]) + [item | combine({'Netbox_ID': lookup('pipe', 'python3 -c \"import uuid; print(uuid.uuid4())\"')})] }}"
+      with_items: "{{ vpns_data.results }}"
+
+    - name: Guardar VPNs con Netbox_ID en un archivo consolidado
+      copy:
+        content: "{{ {'results': vpns_with_uuid} | to_nice_json }}"
+        dest: consolidated_vpns.json
+
+    - name: Realizar POST de VPNs a NetBox
+      uri:
+        url: "{{ lookup('env', 'NETBOX_URL') }}/vpn/tunnels/"
+        method: POST
+        headers:
+          Authorization: "Token {{ lookup('env', 'NETBOX_API_TOKEN') }}"
+          Content-Type: "application/json"
+        body_format: json
+        body: >
+          {
+            "name": "{{ item.name }}",
+            "status": "{{ 'active' if item.status == 'up' else 'disabled' }}",
+            "encapsulation": "ipsec-tunnel",
+            "description": "",
+            "comments": "{{ item.comment | replace('\n', '\\n') }}",
+            "custom_fields": {
+              "Netbox_ID": "{{ item.Netbox_ID }}",
+              "Local_Gateway": "190.128.189.50",
+              "Remote_Gateway": "{{ item.remote_gateway }}",
+              "Local_Subnets": "{{ item.local_subnets }}",
+              "Remote_Subnets": "{{ item.remote_subnets }}"
+            }
+          }
+      with_items: "{{ vpns_with_uuid }}"

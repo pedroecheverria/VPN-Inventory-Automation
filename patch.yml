@@ -1,0 +1,33 @@
+- name: Realizar PATCH para actualizar VPNs
+  hosts: localhost
+  tasks:
+    - name: Cargar VPNs con cambios
+      include_vars:
+        file: update_vpns.json
+        name: vpns_updates
+
+    - name: Realizar PATCH para actualizar VPNs
+      uri:
+        url: "{{ lookup('env', 'NETBOX_URL') }}/vpn/tunnels/{{ item.id }}/"
+        method: PATCH
+        headers:
+          Authorization: "Token {{ lookup('env', 'NETBOX_API_TOKEN') }}"
+          Content-Type: "application/json"
+        body_format: json
+        body: >
+          {
+            "name": "{{ item.name }}",
+            "status": "{{ 'active' if item.status == 'up' else 'disabled' }}",
+            "encapsulation": "ipsec-tunnel",
+            "description": "",
+            "comments": "{{ item.comment | replace('\n', '\\n') }}",
+            "custom_fields": {
+              "Netbox_ID": "{{ item.Netbox_ID }}",
+              "Local_Gateway": "190.128.189.50",
+              "Remote_Gateway": "{{ item.remote_gateway }}",
+              "Local_Subnets": "{{ item.local_subnets }}",
+              "Remote_Subnets": "{{ item.remote_subnets }}"
+            }
+          }
+        status_code: [200, 204]
+      with_items: "{{ vpns_updates.results }}"

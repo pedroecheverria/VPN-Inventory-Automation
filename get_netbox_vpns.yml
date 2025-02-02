@@ -1,0 +1,17 @@
+- name: Obtener VPNs desde NetBox
+  hosts: localhost
+  tasks:
+    - name: Realizar GET de VPNs desde NetBox
+      uri:
+        url: "{{ lookup('env', 'NETBOX_URL') }}/vpn/tunnels/"
+        method: GET
+        headers:
+          Authorization: "Token {{ lookup('env', 'NETBOX_API_TOKEN') }}"
+          Content-Type: "application/json"
+        return_content: yes
+      register: netbox_vpns
+
+    - name: Guardar VPNs obtenidas desde NetBox
+      copy:
+        content: "{{ netbox_vpns.content }}"
+        dest: patch_vpns.json

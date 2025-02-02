@@ -1,0 +1,17 @@
+- name: Eliminar VPNs de NetBox
+  hosts: localhost
+
+  tasks:
+    - name: Cargar VPNs a eliminar
+      include_vars:
+        file: delete_vpns.json
+        name: vpns_to_delete
+
+    - name: Realizar DELETE para eliminar VPNs en NetBox
+      uri:
+        url: "{{ lookup('env', 'NETBOX_URL') }}/vpn/tunnels/{{ item.id }}/"
+        method: DELETE
+        headers:
+          Authorization: "Token {{ lookup('env', 'NETBOX_API_TOKEN') }}"
+        status_code: [204, 404]  # Ignoramos si ya no existe
+      with_items: "{{ vpns_to_delete.results }}"
